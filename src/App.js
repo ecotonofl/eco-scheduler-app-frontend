@@ -6,8 +6,13 @@ import "./styles.css";
 const API=process.env.REACT_APP_API_URL||"http://localhost:4000";
 const workTypes=["Line Clearance","Ground Water Sampling","Soil Grab","Soil Composite","Tap Water Grab","Waste Water Composite","Waste Water Grab","Drinking Water Grab","Deep Wells Grab","Surface Water Grab"];
 const statuses=["Pending","In Progress","Completed","Canceled","Rescheduled"];
-const today=()=>new Date().toISOString().slice(0,10);
-const clock=()=>new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+const TIME_ZONE="America/New_York";
+const today=(date=new Date())=>{
+ const parts=new Intl.DateTimeFormat("en-US",{timeZone:TIME_ZONE,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(date);
+ const part=type=>parts.find(p=>p.type===type).value;
+ return `${part("year")}-${part("month")}-${part("day")}`;
+};
+const clock=(date=new Date())=>date.toLocaleTimeString("en-US",{timeZone:TIME_ZONE,hour:"2-digit",minute:"2-digit"});
 
 function Driver({tasks,refresh}){
  const update=async(t,patch)=>{await axios.put(`${API}/api/tasks/${t.id}`,patch);refresh()};
