@@ -46,3 +46,21 @@ test('API rejection is shown and preserves the entered project for retry',async(
   expect(host.querySelector('[role="alert"]').textContent).toBe('Project code already exists');
   expect(input('Project code').value).toBe('DUPLICATE');expect(button('Create project').disabled).toBe(false);
 });
+
+test('Project search matches code, name and client without discarding the open workspace',async()=>{
+  const p={id:1,code:'FIELD-01',name:'Synthetic field study',client:'Sample customer',status:'Active',sample_count:0,stop_count:0};
+  const other={...p,id:2,code:'LAB-02',name:'Lab review',client:'Other customer',status:'On Hold'};
+  const api={get:jest.fn(async()=>({data:{project:p,tasks:[],samples:[],invoices:[]}}))};
+  await act(async()=>root.render(<Workspace api={api} projects={[p,other]} refreshProjects={jest.fn()} revision={0} onSchedule={jest.fn()}/>));
+  await act(async()=>host.querySelector('.project-choice').click());
+  for(const query of ['field-01','field study','sample customer']){
+    await change('Find a project',query);
+    expect(host.querySelectorAll('.project-choice')).toHaveLength(1);
+    expect(host.querySelector('.project-choice').textContent).toContain('FIELD-01');
+  }
+  await change('Find a project','no matching code');
+  expect(host.textContent).toContain('No matching projects');
+  expect(button('Schedule fieldwork')).toBeDefined();
+  await change('Find a project','');
+  expect(host.querySelectorAll('.project-choice')).toHaveLength(2);
+});

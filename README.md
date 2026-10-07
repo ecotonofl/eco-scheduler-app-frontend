@@ -2,6 +2,10 @@
 
 Adds a Projects navigation tab alongside the existing Driver and Supervisor scheduler. A project connects field stops, samples, their requested/reported tests, and itemized invoices. Existing standalone stops remain supported. Existing EcotonoFL logo, home-screen icons and manifest are retained.
 
+The design refinement is based on the recovered June 28, 2026 `ecotonofl-field-ops-v2.zip` prototype: navy sidebar, blue/green navigation accents, light panels and compact status badges. Earlier scheduling descriptions also informed light-blue headings and warm table rows. Only working Driver, Supervisor and Projects routes are shown. Search projects by code, name or client without losing the selected project. Mobile navigation remains visible; dates/times stay paired.
+
+The broader Project Workspace plan was recovered from a shared chat. Its equipment, monitoring-well, COC, field-note, QA/QC, notification and report sections remain roadmap items rather than inactive navigation tabs. This increment does not display a fabricated health score, live map or automated notification state. The recovered prototype itself, its sample contacts and private chat contents are not included in the public repository.
+
 ## Local review with synthetic data
 
 Start the companion backend branch first (its `docs/WORKSPACE.md` describes the API). Use a fresh local database, not a production export.
