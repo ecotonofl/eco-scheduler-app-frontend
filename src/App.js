@@ -14,9 +14,13 @@ const today=(date=new Date())=>{
 };
 const clock=(date=new Date())=>date.toLocaleTimeString("en-US",{timeZone:TIME_ZONE,hour:"2-digit",minute:"2-digit"});
 
+function Brand(){
+ return <div className="brand"><img className="company-logo" src={`${process.env.PUBLIC_URL}/ecotonofl-logo.jpg`} alt="EcotonoFL" width="104" height="78"/><div>ECO<span>GO</span></div></div>;
+}
+
 function Driver({tasks,refresh}){
  const update=async(t,patch)=>{await axios.put(`${API}/api/tasks/${t.id}`,patch);refresh()};
- return <main><div className="hero"><div><div className="brand">ECO<span>GO</span></div><h1>Driver Route</h1><p>Another beautiful day in paradise.</p></div><div className="clock">{clock()}<small>{today()}</small></div></div>
+ return <main><div className="hero"><div><Brand/><h1>Driver Route</h1><p>Another beautiful day in paradise.</p></div><div className="clock">{clock()}<small>{today()}</small></div></div>
  <div className="cards">{tasks.length?tasks.map(t=><article className="task" key={t.id}><div className="taskTop"><b>STOP {t.stop_number}</b><span className={"pill "+t.status.replaceAll(" ","").toLowerCase()}>{t.status}</span></div><h2>{t.company}</h2><div className="work">{t.work_type}</div><a href={`https://maps.google.com/?q=${encodeURIComponent(t.address)}`} target="_blank" rel="noreferrer">{t.address}</a><div className="grid"><p><b>Contact</b><br/>{t.contact_name||"—"} {t.contact_phone&&<a href={"tel:"+t.contact_phone}>{t.contact_phone}</a>}</p><p><b>Lab</b><br/>{t.lab||"—"}</p></div>{t.instructions&&<div className="note">{t.instructions}</div>}<div className="actions">
  {t.status!=="In Progress"&&t.status!=="Completed"&&<button onClick={()=>update(t,{status:"In Progress",arrival_time:clock()})}>Arrived / Start</button>}
  {t.status==="In Progress"&&<button className="complete" onClick={()=>update(t,{status:"Completed",leaving_time:clock()})}>Complete Stop</button>}
@@ -26,7 +30,7 @@ function Driver({tasks,refresh}){
 function Supervisor({tasks,refresh}){
  const [form,setForm]=useState({stop_number:tasks.length+1,work_type:"Ground Water Sampling",company:"",address:"",contact_name:"",contact_phone:"",instructions:"",lab:"",coc_link:"",driver:"Driver 1",scheduled_date:today(),miles:0});
  const submit=async e=>{e.preventDefault();await axios.post(API+"/api/tasks",form);setForm({...form,stop_number:Number(form.stop_number)+1,company:"",address:"",contact_name:"",contact_phone:"",instructions:"",coc_link:"",miles:0});refresh()};
- return <main><div className="hero"><div><div className="brand">ECO<span>GO</span></div><h1>Supervisor Dashboard</h1><p>Schedule, dispatch and monitor field work.</p></div><div className="stats"><b>{tasks.length}</b><small>Stops Today</small></div></div>
+ return <main><div className="hero"><div><Brand/><h1>Supervisor Dashboard</h1><p>Schedule, dispatch and monitor field work.</p></div><div className="stats"><b>{tasks.length}</b><small>Stops Today</small></div></div>
  <section className="panel"><h2>Add Stop</h2><form onSubmit={submit} className="form">
  <input type="number" value={form.stop_number} onChange={e=>setForm({...form,stop_number:e.target.value})} placeholder="Stop #"/>
  <select value={form.work_type} onChange={e=>setForm({...form,work_type:e.target.value})}>{workTypes.map(x=><option key={x}>{x}</option>)}</select>
